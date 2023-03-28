@@ -3434,10 +3434,10 @@ follow-redirects@^1.0.0, follow-redirects@^1.15.0:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
 
-foreks-sdk@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/foreks-sdk/-/foreks-sdk-1.0.0.tgz#47487b59960ec208e3a8c71071dd4f5690cfd2d0"
-  integrity sha512-9fjdWmpu9Cjsw/62Z3O3xg6Fhne5AitdN2ilqDFahPKYgi0c1OZnvLFja3g2JSYsgjYPIsCb8VcOhAPJjeAbPg==
+foreks-sdk@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/foreks-sdk/-/foreks-sdk-1.0.9.tgz#9b5f4d5dc1da03f15c626368afead63ecde88f2a"
+  integrity sha512-VxFdhtgiCIANcGXaDrH5mYf5yEyHg5ucWfumUUuQP48t3ZAqllGceE0tfT6WEcVnsKkRsLk8JPlIoV7juenVzg==
   dependencies:
     axios "^1.3.3"
 

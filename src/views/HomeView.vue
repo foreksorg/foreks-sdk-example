@@ -32,17 +32,24 @@
       </div>
     </div>
     <EconomicCalendar />
+    <hr />
     <News />
+    <hr />
+    <SymbolDetail />
+    <hr />
+    <SymbolList />
   </div>
 </template>
 
 <script lang="ts">
 import EconomicCalendar from "@/components/EconomicCalendar.vue";
 import News from "@/components/News.vue";
+import SymbolDetail from "@/components/SymbolDetail.vue";
+import SymbolList from "@/components/SymbolList.vue";
 import { Options, Vue } from "vue-class-component";
 
 @Options({
-  components: { EconomicCalendar, News },
+  components: { EconomicCalendar, News, SymbolDetail, SymbolList },
 })
 export default class Home extends Vue {
   eurUsdAsk = 0;

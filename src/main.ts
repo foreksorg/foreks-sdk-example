@@ -26,6 +26,11 @@ import "@/assets/style.css";
     "FX",
     DefinitionLocale.BIST
   );
+  // set bist definitions
+  await foreksWebSDK.definition.setDefinitionByDomain(
+    "BIST",
+    DefinitionLocale.BIST
+  );
 
   // create vue app
   const app = createApp(App);
