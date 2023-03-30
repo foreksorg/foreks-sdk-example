@@ -178,3 +178,113 @@ table tr:hover td {
   );
   background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0);
 }
+
+.direction {
+  float: left;
+  margin-right: 10px;
+  height: 20px;
+  width: 10px;
+}
+.direction-ld {
+  top: 50%;
+  left: 50%;
+  position: relative;
+  transform: translate(-50%, 0%);
+}
+.direction-up {
+  display: block;
+  background: #00a300 url(~@/assets/direction-up.svg) no-repeat center;
+  border-radius: 3px;
+  background-position: top;
+}
+.direction-down {
+  display: block;
+  background: #e90000 url(~@/assets/direction-down.svg) no-repeat center;
+  border-radius: 3px;
+  background-position: bottom;
+}
+.direction-equal {
+  display: block;
+  background: #bbbbbb url(~@/assets/direction-def-grid.svg) no-repeat center;
+  border-radius: 3px;
+}
+.direction-def {
+  display: block;
+  background: $direction_equal;
+}
+.code {
+  float: left;
+}
+.symbol-field {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 0;
+  min-width: 80px;
+}
+.symbol-container {
+  display: flex;
+}
+.time-field {
+  margin-left: 20px;
+  font-size: 9px;
+  display: none;
+}
+.only-direction {
+  float: none;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-color: transparent !important;
+}
+
+.flash-up {
+  background: #00db85;
+  color: #000 !important;
+}
+.flash-down {
+  background: #f5443a;
+  color: #fff !important;
+}
+
+.fixed-up {
+  color: #00db85;
+}
+
+.fixed-down {
+  color: #f5443a;
+}
+
+[data-type="TIME"] {
+  text-align: right;
+}
+
+[data-type="INT"],
+[data-type="LONG"],
+[data-type="NUMBER"] {
+  text-align: right;
+}
+
+[data-type="DATE"] {
+  text-align: right;
+}
+
+[data-type="DATETIME"] {
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.nav-item {
+  padding: 0 10px;
+  background: #d8d8d8;
+  margin: 1px;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+.tal {
+  text-align: left;
+  justify-content: flex-start;
+}

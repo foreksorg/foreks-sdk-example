@@ -8,13 +8,21 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "core-js": "^3.8.3",
-    "vue": "^3.2.13",
+    "accounting": "^0.4.1",
+    "core-js": "^3.29.1",
+    "dayjs": "^1.11.7",
+    "moment": "^2.29.4",
+    "vue": "^3.2.47",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.3",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "numeral": "2.0.6",
+    "apexcharts": "^3.37.2",
+    "vue3-apexcharts": "^1.4.1"
   },
   "devDependencies": {
+    "@types/accounting": "^0.4.2",
+    "@types/numeral": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
@@ -28,8 +36,8 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
+    "foreks-sdk": "^1.0.13",
     "prettier": "^2.4.1",
-    "foreks-sdk": "^1.0.9",
     "typescript": "~4.5.5"
   },
   "eslintConfig": {

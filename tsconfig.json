@@ -1,20 +1,30 @@
 {
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "allowJs": true,
+    "checkJs": false,
     "jsx": "preserve",
+    "importHelpers": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "vue",
+      "node",
+      "webpack-env",
+      "webpack",
     ],
     "paths": {
       "@/*": [
@@ -36,6 +46,7 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/tests/cypress"
   ]
 }
