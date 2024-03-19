@@ -4,7 +4,6 @@ import App from "./App.vue";
 import store from "./store";
 import ForeksWebSDK from "foreks-sdk/web-sdk";
 import { DefinitionLocale } from "foreks-sdk/commons/enums";
-import { APIEnvironment } from "foreks-sdk/commons/enums";
 import PubsubDataController from "./utils/PubSubDataController";
 import VueApexCharts from "vue3-apexcharts";
 import "@/assets/style.css";
