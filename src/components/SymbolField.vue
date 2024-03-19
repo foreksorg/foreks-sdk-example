@@ -51,12 +51,13 @@ export default class extends Vue.with(Props) {
    * @description Subscribe all definitions pubsub
    */
   subscribe(): void {
-    this.subscribeId.push(
-      this.$foreksWebSDK.socket.subscribe(
-        [this.definition._id],
-        [this.field.shortCode]
-      )
-    );
+    if (this.$foreksWebSDK.socket)
+      this.subscribeId.push(
+        this.$foreksWebSDK.socket.subscribe(
+          [this.definition._id],
+          [this.field.shortCode]
+        )
+      );
   }
 
   /**
@@ -79,7 +80,7 @@ export default class extends Vue.with(Props) {
    */
   beforeUnmount(): void {
     for (let id of this.subscribeId)
-      if (id) this.$foreksWebSDK.socket.unSubscribe(id);
+      if (id) this.$foreksWebSDK?.socket?.unSubscribe(id);
   }
 }
 </script>
