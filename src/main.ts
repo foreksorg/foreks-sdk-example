@@ -18,7 +18,7 @@ import "@/assets/style.css";
     "foreks", // company
     "server", // resource
     "wss://feed-ws-web.foreks.com/websocket", // wss address you can learn from your sales manager
-    "foreks-sdk-example", // your application name
+    "foreks-sdk-example" // your application name
   );
   // initialize foreks web sdk
   await foreksWebSDK.initialize();
