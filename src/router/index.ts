@@ -32,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "symbol-detail",
     component: () => import("../views/SymbolDetail.vue"),
   },
+  {
+    path: "/indicator",
+    name: "indicator",
+    component: () => import("../views/Indicator.vue"),
+  },
 ];
 
 const router = createRouter({

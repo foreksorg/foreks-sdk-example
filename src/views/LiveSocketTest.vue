@@ -48,7 +48,7 @@ export default class Home extends Vue {
     // you can use <SymbolField> component to get data easily but sometimes you need to use socket callback
     const usdTry = this.$foreksWebSDK.definition.getByCode("USDTRY");
     if (usdTry) {
-      this.$foreksWebSDK.socket.subscribe(
+      this.$foreksWebSDK.socket?.subscribe(
         [usdTry._id, "o11"],
         ["a", "b"],
         (data) => {

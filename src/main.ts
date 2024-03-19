@@ -14,6 +14,7 @@ import "@/assets/style.css";
   const foreksWebSDK: ForeksWebSDK = new ForeksWebSDK(
     "", // username
     "", // password
+    undefined, // token
     "foreks", // company
     "server", // resource
     "wss://feed-ws-web.foreks.com/websocket", // wss address you can learn from your sales manager
@@ -24,7 +25,7 @@ import "@/assets/style.css";
   // connect to socket
   await foreksWebSDK.connectToSocket();
   // set global callback for socket data (pubsub data) to PubsubDataController.sendData
-  foreksWebSDK.socket.setGlobalCallback(PubsubDataController.sendData);
+  foreksWebSDK.socket?.setGlobalCallback(PubsubDataController.sendData);
   // set fx definitions
   await foreksWebSDK.definition.setDefinitionByQuery(
     [
@@ -48,8 +49,8 @@ import "@/assets/style.css";
   app.use(VueApexCharts);
 
   // register foreks web sdk to vue app
-  app.config.globalProperties.$foreksWebSDK = foreksWebSDK;
-  global.$foreksWebSDK = foreksWebSDK;
+  app.config.globalProperties.$foreksWebSDK = foreksWebSDK || undefined;
+  global.$foreksWebSDK = foreksWebSDK || undefined;
 })().catch((error) => {
   console.error(error);
 });

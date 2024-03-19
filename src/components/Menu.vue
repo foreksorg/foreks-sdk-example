@@ -12,6 +12,9 @@
     <li class="nav-item">
       <router-link to="/symbol-list">Symbol List</router-link>
     </li>
+    <li class="nav-item">
+      <router-link to="/indicator">Indicator</router-link>
+    </li>
   </ul>
 </template>
 <script lang="ts">
