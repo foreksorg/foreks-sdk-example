@@ -65,21 +65,6 @@ export default class extends Vue {
     await this.initialIndicator();
   }
 
-  getIndicatorData = (indicatorKey, item) => {
-    // İndikatör verileri kontrolü
-    if (
-      !this.indicatorData[1] ||
-      !this.indicatorData[1].r ||
-      !this.indicatorData[1].r[indicatorKey]
-    ) {
-      return 0.0; // Veri bulunamazsa varsayılan değer döndür
-    }
-
-    // Belirli indikatör anahtarı ve öğe için veriyi al
-    const data = this.indicatorData[1].r[indicatorKey][item];
-    return data || 0.0; // Veri yoksa varsayılan değer döndür
-  };
-
   async initialIndicator() {
     this.indicatorData = await this.$foreksWebSDK.indicator.getIndicatorLast(
       "BRENTSPOT",
