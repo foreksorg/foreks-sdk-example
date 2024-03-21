@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>BRENTSPOT</h1>
+    <h1>GARAN.E.BIST</h1>
     <div v-if="!ready">
       <div class="lds-ripple">
         <div></div>
@@ -23,9 +23,9 @@
           <tr>
             <td></td>
             <td></td>
-            <td>{{ indicatorData[0].e.c }}</td>
-            <td>{{ indicatorData[0].e.h }}</td>
-            <td>{{ indicatorData[0].e.l }}</td>
+            <td>{{ indicatorData[1].e.c }}</td>
+            <td>{{ indicatorData[1].e.h }}</td>
+            <td>{{ indicatorData[1].e.l }}</td>
           </tr>
         </tbody>
         <thead>
@@ -67,7 +67,7 @@ export default class extends Vue {
 
   async initialIndicator() {
     this.indicatorData = await this.$foreksWebSDK.indicator.getIndicatorLast(
-      "BRENTSPOT",
+      "GARAN.E.BIST",
       1440,
       2,
       [
@@ -75,8 +75,6 @@ export default class extends Vue {
         { PVT: "fibonacci" },
         { PVT: "camarilla" },
         { PVT: "woodie" },
-        { ENVW: "per:1-perc:1" },
-        { APO: "fast:1-slow:2" },
       ] as unknown as Record<Indicators, string>[]
     );
     this.ready = true;
