@@ -37,6 +37,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "indicator",
     component: () => import("../views/Indicator.vue"),
   },
+  {
+    path: "/heat-map",
+    name: "heat-map",
+    component: () => import("../views/HeatMap.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -66,18 +66,17 @@ export default class extends Vue {
   }
 
   async initialIndicator() {
-    this.indicatorData = await this.$foreksWebSDK.indicator.getIndicatorLast(
-      "GARAN.E.BIST",
-      1440,
-      2,
-      [
+    this.$foreksWebSDK.indicator
+      .getIndicatorLast("GARAN.E.BIST", 1440, 2, [
         { PVT: "classic" },
         { PVT: "fibonacci" },
         { PVT: "camarilla" },
         { PVT: "woodie" },
-      ] as unknown as Record<Indicators, string>[]
-    );
-    this.ready = true;
+      ] as unknown as Record<Indicators, string>[])
+      .then((indicatorRes) => {
+        this.indicatorData = indicatorRes;
+        this.ready = true;
+      });
   }
 }
 </script>
