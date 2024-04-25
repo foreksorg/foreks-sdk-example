@@ -12,6 +12,7 @@
     "apexcharts": "^3.37.2",
     "core-js": "^3.29.1",
     "dayjs": "^1.11.7",
+    "google-charts": "^2.0.0",
     "moment": "^2.29.4",
     "numeral": "2.0.6",
     "vue": "^3.2.47",

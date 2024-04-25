@@ -15,6 +15,9 @@
     <li class="nav-item">
       <router-link to="/indicator">Indicator</router-link>
     </li>
+    <li class="nav-item">
+      <router-link to="/heat-map">Heat Map</router-link>
+    </li>
   </ul>
 </template>
 <script lang="ts">
