@@ -12,8 +12,8 @@ import "@/assets/style.css";
 (async () => {
   // initialize foreks web sdk
   const foreksWebSDK: ForeksWebSDK = new ForeksWebSDK(
-    "WebForeksGuest", // username
-    "c488049768e666ab2dd5363c93d25cc3", // password
+    "", // username
+    "", // password
     undefined, // token
     "foreks", // company
     "server", // resource
