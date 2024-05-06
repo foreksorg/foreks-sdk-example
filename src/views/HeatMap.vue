@@ -137,6 +137,8 @@ export default class extends Vue {
     GoogleCharts.api.setOnLoadCallback(function () {
       var data = GoogleCharts.api.visualization.arrayToDataTable(chartData);
       var view = new GoogleCharts.api.visualization.DataView(data);
+      var parentIndex = 0;
+
       view.setColumns([0, 1, 2]);
 
       var container = document.getElementById("googleChart");
@@ -189,6 +191,19 @@ export default class extends Vue {
           }
         });
       }
+
+      function handleSelect() {
+        var selection = treemap.getSelection();
+        if (selection.length > 0) {
+          var row = selection[0].row;
+          if (row === parentIndex) {
+            treemap.goUpAndDraw();
+          } else {
+            parentIndex = row;
+          }
+        }
+      }
+
       GoogleCharts.api.visualization.events.addListener(
         treemap,
         "onmouseout",
@@ -204,9 +219,16 @@ export default class extends Vue {
         "ready",
         addColors
       );
+      GoogleCharts.api.visualization.events.addListener(
+        treemap,
+        "select",
+        handleSelect
+      );
+
       drawIt();
     });
   }
+
   prepareData() {
     var dataArr: any[] = [];
     var xu100 = this.levelCalculatedData["XU100"];
