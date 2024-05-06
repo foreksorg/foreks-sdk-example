@@ -168,13 +168,13 @@ export default class extends Vue {
         elements.forEach((element, index) => {
           var textElement = element?.parentNode?.querySelector("text");
           if (textElement?.textContent?.includes("…")) {
-            for (var i = 0; i < data.Wf.length; i++) {
+            for (var i = 0; i < chartData.length + 1; i++) {
               if (
-                data.Wf[i].c[0].v.startsWith(
+                chartData[i + 1][0].startsWith(
                   textElement?.textContent?.replace("…", "")
                 )
               ) {
-                textElement!.textContent = data.Wf[i].c[0].v;
+                textElement!.textContent = chartData[i + 1][0];
                 textElement!.setAttribute("style", "writing-mode: tb;");
                 break;
               }
