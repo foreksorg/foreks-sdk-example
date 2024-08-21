@@ -1,4 +1,5 @@
 <template>
+  <div @click="goBack()">BACK</div>
   <div v-if="!ready">
     <div class="lds-ripple">
       <div></div>
@@ -17,7 +18,12 @@ import { GoogleCharts } from "google-charts";
 
 @Options({})
 export default class extends Vue {
+  /* eslint-disable */
   ready = false;
+  container;
+  chartData;
+  data;
+  treemap;
   levelCalculatedData = {};
   heatMapData!: HeatMapResponse;
   positiveColor = [
@@ -53,6 +59,11 @@ export default class extends Vue {
       this.calculateDept(this.heatMapData, "root");
       this.drawGraph();
     });
+  }
+
+  goBack() {
+    this.treemap.goUpAndDraw();
+    this.addColors();
   }
 
   calculateLevelsData(levelJson, parentCode) {
@@ -123,8 +134,8 @@ export default class extends Vue {
   }
 
   drawChart() {
-    var chartData = this.prepareData();
-    chartData.unshift([
+    this.chartData = this.prepareData();
+    this.chartData.unshift([
       "Code",
       "Parent",
       "Calc",
@@ -134,16 +145,17 @@ export default class extends Vue {
       "name",
     ]);
 
-    GoogleCharts.api.setOnLoadCallback(function () {
-      var data = GoogleCharts.api.visualization.arrayToDataTable(chartData);
-      var view = new GoogleCharts.api.visualization.DataView(data);
+    GoogleCharts.api.setOnLoadCallback(() => {
+      this.data = GoogleCharts.api.visualization.arrayToDataTable(this.chartData);
+      var view = new GoogleCharts.api.visualization.DataView(this.data);
       view.setColumns([0, 1, 2]);
 
-      var container = document.getElementById("googleChart");
-      var treemap = new GoogleCharts.api.visualization.TreeMap(container);
+      this.container = document.getElementById("googleChart");
+      this.treemap = new GoogleCharts.api.visualization.TreeMap(this.container);
 
-      function drawIt() {
-        treemap.draw(view, {
+
+      const drawIt = () => {
+        this.treemap.draw(view, {
           headerHeight: 35,
           legend: false,
           fontColor: "black",
@@ -151,66 +163,83 @@ export default class extends Vue {
           height: 500,
           width: 500,
         });
-        setTimeout(function () {
-          addColors();
+        setTimeout(() => {
+          this.addColors();
         });
       }
 
-      function addColors() {
-        const elements = Array.from(
-          document.getElementsByTagName(
-            "rect"
-          ) as unknown as HTMLCollectionOf<HTMLElement>
-        );
-
-        elements.forEach((element, index) => {
-          var textElement = element?.parentNode?.querySelector("text");
-          if (textElement?.textContent?.includes("…")) {
-            for (var i = 0; i < data.Wf.length; i++) {
-              if (
-                data.Wf[i].c[0].v.startsWith(
-                  textElement?.textContent?.replace("…", "")
-                )
-              ) {
-                textElement!.textContent = data.Wf[i].c[0].v;
-                textElement!.setAttribute("style", "writing-mode: tb;");
-                break;
-              }
-            }
-          }
-          var dataRows = data.getFilteredRows([
-            {
-              column: 0,
-              value: textElement?.textContent,
-            },
-          ]);
-          if (dataRows.length > 0) {
-            element.setAttribute("fill", data.getValue(dataRows[0], 3));
-          }
-        });
-      }
       GoogleCharts.api.visualization.events.addListener(
-        treemap,
+        this.treemap,
         "onmouseout",
-        addColors
+        this.addColors
       );
       GoogleCharts.api.visualization.events.addListener(
-        treemap,
+        this.treemap,
         "onmouseover",
-        addColors
+        this.addColors
       );
       GoogleCharts.api.visualization.events.addListener(
-        treemap,
+        this.treemap,
         "ready",
-        addColors
+        this.addColors
       );
       drawIt();
+    });
+  }
+
+  addColors() {
+    const elements = Array.from(
+      document.getElementsByTagName(
+        "rect"
+      ) as unknown as HTMLCollectionOf<HTMLElement>
+    );
+
+    elements.forEach((element, index) => {
+      var textElement = element?.parentNode?.querySelector("text");
+
+
+      for (var i = 0; i < this.data.Wf.length; i++) {
+        var parentX = textElement?.getAttribute("x");
+        var isVertical= false;
+        if (textElement?.textContent?.includes("…")) {
+          isVertical=true;
+          textElement!.setAttribute("style", "writing-mode: tb;");
+        }
+        if (
+          this.data.Wf[i].c[0].v.startsWith(
+            textElement?.textContent?.replace("…", "")
+          )
+        ) {
+          let roundedNum = this.data.Wf[i].c[4].v && typeof this.data.Wf[i].c[4].v === "number" ? Math.round(this.data.Wf[i].c[4].v * 1000) / 1000 : "0";
+          textElement!.textContent = this.data.Wf[i].c[0].v + " % " + roundedNum;
+          if (textElement) {
+          textElement!.innerHTML = isVertical ? `<tspan x="${parentX}" dx="5">${this.data.Wf[i].c[0].v}</tspan>
+          <tspan x="${parentX}" y="${textElement?.getAttribute("y")}" dx="-5">%${roundedNum}</tspan>` : `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
+          <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`;;
+        }
+          var textLength = textElement?.getBBox().width;
+          var svgLength = textElement?.parentElement?.getBoundingClientRect().width;
+          if (textLength && svgLength) {
+            textLength >= svgLength &&
+              textElement!.setAttribute("font-size", "8");
+          }
+          break;
+        }
+      }
+      var dataRows = this.data.getFilteredRows([
+        {
+          column: 0,
+          value: textElement?.textContent?.split(" % ")[0],
+        },
+      ]);
+      if (dataRows.length > 0) {
+        element.setAttribute("fill", this.data.getValue(dataRows[0], 3));
+      }
     });
   }
   prepareData() {
     var dataArr: any[] = [];
     var xu100 = this.levelCalculatedData["XU100"];
-
     dataArr.push([
       xu100.parent[0].label,
       null,
@@ -220,6 +249,7 @@ export default class extends Vue {
       xu100.parent[0].last,
       xu100.parent[0].name,
     ]);
+
     for (var i = 0; i < Object.keys(this.levelCalculatedData).length; i++) {
       var key =
         this.levelCalculatedData[Object.keys(this.levelCalculatedData)[i]];
@@ -232,6 +262,7 @@ export default class extends Vue {
         });
         for (var j = 0; j < key.childs.length; j++) {
           var child = key.childs[j];
+
           if (j < 5 || child.label.indexOf("BIST") > -1) {
             dataArr.push([
               child.label,
