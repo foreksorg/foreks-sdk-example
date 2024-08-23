@@ -34,11 +34,11 @@ export default class extends Vue {
     "rgba(43,160,41,1)",
   ];
   negativeColor = [
-    "rgba(219,17,19,1)",
-    "rgba(219,17,19,0.8)",
-    "rgba(219,17,19,0.6)",
-    "rgba(219,17,19,0.4)",
     "rgba(219,17,19,0.2)",
+    "rgba(219,17,19,0.4)",
+    "rgba(219,17,19,0.6)",
+    "rgba(219,17,19,0.8)",
+    "rgba(219,17,19,1)",
   ];
   zeroColor = ["rgba(69, 69, 69, 0.5)"];
   scaleColors = [
@@ -200,9 +200,9 @@ export default class extends Vue {
 
       for (var i = 0; i < this.data.Wf.length; i++) {
         var parentX = textElement?.getAttribute("x");
-        var isVertical= false;
+        var isVertical = false;
         if (textElement?.textContent?.includes("…")) {
-          isVertical=true;
+          isVertical = true;
           textElement!.setAttribute("style", "writing-mode: tb;");
         }
         if (
@@ -211,12 +211,11 @@ export default class extends Vue {
           )
         ) {
           let roundedNum = this.data.Wf[i].c[4].v && typeof this.data.Wf[i].c[4].v === "number" ? Math.round(this.data.Wf[i].c[4].v * 1000) / 1000 : "0";
-          textElement!.textContent = this.data.Wf[i].c[0].v + " % " + roundedNum;
           if (textElement) {
-          textElement!.innerHTML = isVertical ? `<tspan x="${parentX}" dx="5">${this.data.Wf[i].c[0].v}</tspan>
-          <tspan x="${parentX}" y="${textElement?.getAttribute("y")}" dx="-5">%${roundedNum}</tspan>` : `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
-          <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`;;
-        }
+            textElement!.innerHTML = isVertical ? `<tspan x="${parentX}" dx="5">${this.data.Wf[i].c[0].v}</tspan>
+              <tspan x="${parentX}" y="${textElement?.getAttribute("y")}" dx="-5">% ${roundedNum}</tspan>` : `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
+              <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`;;
+          }
           var textLength = textElement?.getBBox().width;
           var svgLength = textElement?.parentElement?.getBoundingClientRect().width;
           if (textLength && svgLength) {
@@ -229,7 +228,7 @@ export default class extends Vue {
       var dataRows = this.data.getFilteredRows([
         {
           column: 0,
-          value: textElement?.textContent?.split(" % ")[0],
+          value: textElement?.textContent?.split(" % ")[0].trim(),
         },
       ]);
       if (dataRows.length > 0) {
@@ -239,6 +238,7 @@ export default class extends Vue {
   }
   prepareData() {
     var dataArr: any[] = [];
+    var excludedArray: any[] = [];
     var xu100 = this.levelCalculatedData["XU100"];
     dataArr.push([
       xu100.parent[0].label,
@@ -263,30 +263,35 @@ export default class extends Vue {
         for (var j = 0; j < key.childs.length; j++) {
           var child = key.childs[j];
 
-          if (j < 5 || child.label.indexOf("BIST") > -1) {
-            dataArr.push([
-              child.label,
-              key.parent[0].label,
-              child.y,
-              child.color,
-              child.changePercentage,
-              child.last,
-              child.name,
-            ]);
+          if (j < 5) {
+            if (!excludedArray.includes(key.parent[0].label)) {
+              dataArr.push([
+                child.label,
+                key.parent[0].label,
+                child.y,
+                child.color,
+                child.changePercentage,
+                child.last,
+                child.name,
+              ]);
+            }
           } else {
             other += child.y;
+            excludedArray.push(child.label);
           }
         }
         if (other !== 0) {
-          dataArr.push([
-            key.parent[0].name + " DIGER",
-            key.parent[0].label,
-            other,
-            "#bfbfbf",
-            0,
-            0,
-            "",
-          ]);
+          if (!excludedArray.includes(key.parent[0].label)) {
+            dataArr.push([
+              key.parent[0].name + " DIGER",
+              key.parent[0].label,
+              other,
+              "#bfbfbf",
+              0,
+              0,
+              "",
+            ]);
+          }
         }
       }
     }
