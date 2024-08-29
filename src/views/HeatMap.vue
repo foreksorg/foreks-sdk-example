@@ -162,7 +162,10 @@ export default class extends Vue {
           fontSize: 10,
           height: 500,
           width: 500,
-        });
+          eventsConfig: {
+            highlight: [],
+          }
+        },);
         setTimeout(() => {
           this.addColors();
         });
@@ -183,6 +186,10 @@ export default class extends Vue {
         "ready",
         this.addColors
       );
+      GoogleCharts.api.visualization.events.addListener(this.treemap, 'select', () => {
+        var selectedNode = this.treemap.getSelection()[0].row;
+        selectedNode === 6 && this.treemap.setSelection([]);
+      });
       drawIt();
     });
   }
