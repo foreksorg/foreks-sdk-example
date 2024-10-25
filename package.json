@@ -37,7 +37,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
-    "foreks-sdk": "^1.0.55",
+    "foreks-sdk": "^1.0.69",
     "prettier": "^2.4.1",
     "typescript": "~4.5.5"
   },
