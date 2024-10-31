@@ -9,9 +9,9 @@
     <p>loading heatmap data...</p>
   </div>
   <div v-if="ready">
-    <div v-if="graphShow" id="googleChart"></div>
-    <div v-if="!graphShow">
-      <div>{{ tableData.parent[0].name }}</div>
+    <div v-show="graphShow" id="googleChart"></div>
+    <div v-show="!graphShow">
+      <div>{{ tableData.parent[0].label }}</div>
       <table>
         <thead>
           <tr>
@@ -25,7 +25,7 @@
             @click="tableClick(item)"
             :key="index"
           >
-            <td>{{ item.name }}</td>
+            <td>{{ item.label }}</td>
             <td>{{ item.last }}</td>
           </tr>
         </tbody>
@@ -39,18 +39,31 @@ import { Options, Vue } from "vue-class-component";
 import { GoogleCharts } from "google-charts";
 import { reactive } from "vue";
 
+interface NodeData {
+  code: string;
+  label: string;
+  last: number;
+  changePercentage: number;
+  calculation: number;
+  childs: NodeData[]; // Recursive structure for nested children
+}
+
 @Options({})
 export default class extends Vue {
   /* eslint-disable */
   ready = false;
   container;
   chartData;
-  tableData;
+  tableData = reactive({
+    parent: [] as NodeData[],  // Parent için NodeData tipinde bir dizi
+    childs: [] as NodeData[]
+  });
   data;
   graphShow = true;
   parentInfo;
   parentCode;
   scaleMax;
+  lastSelection;
   treemap;
   selectedlevel = "XU100";
   levelCalculatedData = {};
@@ -86,32 +99,57 @@ export default class extends Vue {
       this.heatMapData = heatMapRes;
       this.calculateDept(this.heatMapData, "root");
       this.drawGraph();
+      this.drawTable(this.selectedlevel,null);
     });
   }
 
   goBack() {
+    // var parent = this.findParent(item.label);
+    // console.log(parent,item.name)
+    // this.drawTable(parent,null);
     this.treemap.goUpAndDraw();
     this.addColors();
   }
 
   toggleShowGraph() {
-    console.log(this.levelCalculatedData);
-    this.graphShow = !this.graphShow;
-    this.graphShow ? this.drawGraph() : this.drawTable(null,null)
-    console.log(this.tableData);
 
+    this.graphShow = !this.graphShow;
   }
 
   tableClick(item){
-    console.log(item);
     var dataRows = this.data.getFilteredRows([
         {
           column: 0,
           value: item.label,
         },
       ]);
-      console.log(dataRows);
+      this.treemap.setSelection([{column:null,row:dataRows[0]}])
+      this.lastSelection = dataRows[0];
       this.drawTable(item.name,null);
+      this.addColors();
+      var parent = this.findParent(item.label);
+  }
+
+  findParent(nodeCode) {
+
+    const filteredRows = this.data.getFilteredRows([{ column: 0, value: nodeCode }]);
+    if (filteredRows.length > 0) {
+        const rowIndex = filteredRows[0]; 
+        const parentCode = this.data.getValue(rowIndex, 1); 
+        return parentCode; 
+    } else {
+        console.warn("Parent bulunamadı.");
+        return null;
+    }
+}
+
+
+  handleSelection(){
+
+    var selectedNode = this.treemap.getSelection()[0].row;
+    this.drawTable(this.data.getValue(selectedNode,6),null);
+    this.data.getValue(selectedNode,0).includes("DIGER") ? this.treemap.setSelection([{column:null,row:this.lastSelection}]) : this.lastSelection = selectedNode
+
   }
 
   calculateLevelsData(levelJson, parentCode) {
@@ -169,6 +207,7 @@ export default class extends Vue {
   }
 
   calculateDept(jsonData, parentCode) {
+
     if (0 < jsonData.childs.length) {
       this.calculateLevelsData(jsonData, parentCode);
     }
@@ -195,7 +234,6 @@ export default class extends Vue {
             }
           }
         }
-        this.graphShow = false;
         this.tableData = this.levelCalculatedData[this.selectedlevel];
         this.parentInfo = this.tableData.parent[0];
         this.parentInfo.changePercentageFormatted = this.parentInfo.changePercentage;
@@ -220,12 +258,10 @@ export default class extends Vue {
     GoogleCharts.api.setOnLoadCallback(() => {
       this.data = GoogleCharts.api.visualization.arrayToDataTable(this.chartData);
       var view = new GoogleCharts.api.visualization.DataView(this.data);
-      console.log({view});
       view.setColumns([0, 1, 2]);
 
       this.container = document.getElementById("googleChart");
       this.treemap = new GoogleCharts.api.visualization.TreeMap(this.container);
-
 
       const drawIt = () => {
         this.treemap.draw(view, {
@@ -259,12 +295,7 @@ export default class extends Vue {
         "ready",
         this.addColors
       );
-      GoogleCharts.api.visualization.events.addListener(this.treemap, 'select', () => {
-        console.log(this.treemap.getSelection());
-        var selectedNode = this.treemap.getSelection()[0].row;
-        console.log(this.data.getValue(selectedNode,6));
-        selectedNode === 6 && this.treemap.setSelection([]);
-      });
+      GoogleCharts.api.visualization.events.addListener(this.treemap, 'select', this.handleSelection);
       drawIt();
     });
   }
@@ -322,7 +353,7 @@ export default class extends Vue {
   prepareData() {
     var dataArr: any[] = [];
     var excludedArray: any[] = [];
-    var xu100 = this.levelCalculatedData["XU100"];
+    var xu100 = this.levelCalculatedData[this.selectedlevel];
     dataArr.push([
       xu100.parent[0].label,
       null,
@@ -367,7 +398,6 @@ export default class extends Vue {
         }
         if (other !== 0) {
           if (!excludedArray.includes(key.parent[0].label)) {
-            console.log(totalChange , key.parent[0].name)
             dataArr.push([
               key.parent[0].name + " DIGER",
               key.parent[0].label,
