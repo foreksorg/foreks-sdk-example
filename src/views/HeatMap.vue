@@ -45,7 +45,7 @@ interface NodeData {
   last: number;
   changePercentage: number;
   calculation: number;
-  childs: NodeData[]; // Recursive structure for nested children
+  childs: NodeData[];
 }
 
 @Options({})
@@ -55,7 +55,7 @@ export default class extends Vue {
   container;
   chartData;
   tableData = reactive({
-    parent: [] as NodeData[],  // Parent için NodeData tipinde bir dizi
+    parent: [] as NodeData[],
     childs: [] as NodeData[]
   });
   data;
@@ -99,14 +99,12 @@ export default class extends Vue {
       this.heatMapData = heatMapRes;
       this.calculateDept(this.heatMapData, "root");
       this.drawGraph();
-      this.drawTable(this.selectedlevel,null);
+      this.drawTable(this.selectedlevel, null);
     });
   }
 
   goBack() {
-    // var parent = this.findParent(item.label);
-    // console.log(parent,item.name)
-    // this.drawTable(parent,null);
+    this.drawTable(this.parentInfo.parentCode, null);
     this.treemap.goUpAndDraw();
     this.addColors();
   }
@@ -116,39 +114,39 @@ export default class extends Vue {
     this.graphShow = !this.graphShow;
   }
 
-  tableClick(item){
+  tableClick(item) {
     var dataRows = this.data.getFilteredRows([
-        {
-          column: 0,
-          value: item.label,
-        },
-      ]);
-      this.treemap.setSelection([{column:null,row:dataRows[0]}])
-      this.lastSelection = dataRows[0];
-      this.drawTable(item.name,null);
-      this.addColors();
-      var parent = this.findParent(item.label);
+      {
+        column: 0,
+        value: item.label,
+      },
+    ]);
+    this.treemap.setSelection([{ column: null, row: dataRows[0] }])
+    this.lastSelection = dataRows[0];
+
+    this.drawTable(item.name, null);
+    this.addColors();
+    var parent = this.findParent(item.label);
+
   }
 
   findParent(nodeCode) {
-
     const filteredRows = this.data.getFilteredRows([{ column: 0, value: nodeCode }]);
     if (filteredRows.length > 0) {
-        const rowIndex = filteredRows[0]; 
-        const parentCode = this.data.getValue(rowIndex, 1); 
-        return parentCode; 
+      const rowIndex = filteredRows[0];
+      const parentCode = this.data.getValue(rowIndex, 2);
+      return parentCode;
     } else {
-        console.warn("Parent bulunamadı.");
-        return null;
+      console.warn("Parent bulunamadı.");
+      return null;
     }
-}
+  }
 
 
-  handleSelection(){
-
+  handleSelection() {
     var selectedNode = this.treemap.getSelection()[0].row;
-    this.drawTable(this.data.getValue(selectedNode,6),null);
-    this.data.getValue(selectedNode,0).includes("DIGER") ? this.treemap.setSelection([{column:null,row:this.lastSelection}]) : this.lastSelection = selectedNode
+    this.drawTable(this.data.getValue(selectedNode, 7), null);
+    this.data.getValue(selectedNode, 0).includes("DIGER") ? this.treemap.setSelection([{ column: null, row: this.lastSelection }]) : this.lastSelection = selectedNode
 
   }
 
@@ -221,33 +219,34 @@ export default class extends Vue {
   }
 
   drawTable(code, obj) {
-        if (code) {
-          if (this.levelCalculatedData.hasOwnProperty(code)) {
-            this.selectedlevel = code;
+    if (code) {
+      if (this.levelCalculatedData.hasOwnProperty(code)) {
+        this.selectedlevel = code;
+      } else {
+        if (obj) {
+          if (obj.show) {
+            obj.show = false;
           } else {
-            if (obj) {
-              if (obj.show) {
-                obj.show = false;
-              } else {
-                obj.show = true;
-              }
-            }
+            obj.show = true;
           }
         }
-        this.tableData = this.levelCalculatedData[this.selectedlevel];
-        this.parentInfo = this.tableData.parent[0];
-        this.parentInfo.changePercentageFormatted = this.parentInfo.changePercentage;
-        this.scaleRefresh();
-      };
-      scaleRefresh() {
-        this.scaleMax = this.levelCalculatedData[this.selectedlevel].absMax;
-        this.parentCode = this.levelCalculatedData[this.selectedlevel].parent[0].parentCode;
-      };
+      }
+    }
+    this.tableData = this.levelCalculatedData[this.selectedlevel];
+    this.parentInfo = this.tableData.parent[0];
+    this.parentInfo.changePercentageFormatted = this.parentInfo.changePercentage;
+    this.scaleRefresh();
+  };
+  scaleRefresh() {
+    this.scaleMax = this.levelCalculatedData[this.selectedlevel].absMax;
+    this.parentCode = this.levelCalculatedData[this.selectedlevel].parent[0].parentCode;
+  };
   drawChart() {
     this.chartData = this.prepareData();
     this.chartData.unshift([
       "Code",
       "Parent",
+      "ParentCode",
       "Calc",
       "color",
       "changePercentage",
@@ -258,7 +257,7 @@ export default class extends Vue {
     GoogleCharts.api.setOnLoadCallback(() => {
       this.data = GoogleCharts.api.visualization.arrayToDataTable(this.chartData);
       var view = new GoogleCharts.api.visualization.DataView(this.data);
-      view.setColumns([0, 1, 2]);
+      view.setColumns([0, 1]);
 
       this.container = document.getElementById("googleChart");
       this.treemap = new GoogleCharts.api.visualization.TreeMap(this.container);
@@ -323,7 +322,7 @@ export default class extends Vue {
             textElement?.textContent?.replace("…", "")
           )
         ) {
-          let roundedNum = this.data.Wf[i].c[4].v && typeof this.data.Wf[i].c[4].v === "number" ? Math.round(this.data.Wf[i].c[4].v * 1000) / 1000 : "0";
+          let roundedNum = this.data.Wf[i].c[5].v && typeof this.data.Wf[i].c[5].v === "number" ? Math.round(this.data.Wf[i].c[5].v * 1000) / 1000 : "0";
           if (textElement) {
             textElement!.innerHTML = isVertical ? `<tspan x="${parentX}" dx="5">${this.data.Wf[i].c[0].v}</tspan>
               <tspan x="${parentX}" y="${textElement?.getAttribute("y")}" dx="-5">% ${roundedNum}</tspan>` : `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
@@ -345,17 +344,18 @@ export default class extends Vue {
         },
       ]);
       if (dataRows.length > 0) {
-        element.setAttribute("fill", this.data.getValue(dataRows[0], 3));
+        element.setAttribute("fill", this.data.getValue(dataRows[0], 4));
       }
     });
   }
-  
+
   prepareData() {
     var dataArr: any[] = [];
     var excludedArray: any[] = [];
     var xu100 = this.levelCalculatedData[this.selectedlevel];
     dataArr.push([
       xu100.parent[0].label,
+      null,
       null,
       xu100.parent[0].y,
       xu100.parent[0].color,
@@ -383,6 +383,7 @@ export default class extends Vue {
               dataArr.push([
                 child.label,
                 key.parent[0].label,
+                key.parent[0].name,
                 child.y,
                 child.color,
                 child.changePercentage,
@@ -401,6 +402,7 @@ export default class extends Vue {
             dataArr.push([
               key.parent[0].name + " DIGER",
               key.parent[0].label,
+              key.parent[0].name,
               other,
               "#bfbfbf",
               totalChange,
