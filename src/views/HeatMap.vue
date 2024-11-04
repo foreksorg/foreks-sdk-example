@@ -1,6 +1,10 @@
 <template>
-  <div @click="goBack()">BACK</div>
-  <div @click="toggleShowGraph()">Graph</div>
+  <div class="heat-map-head">
+    <div class="back" @click="goBack()">&lt;</div>
+    <div class="toggle-chart" @click="toggleShowGraph()">
+      {{ graphShow ? "List" : "Graph" }}
+    </div>
+  </div>
   <div v-if="!ready">
     <div class="lds-ripple">
       <div></div>
@@ -121,33 +125,18 @@ export default class extends Vue {
         value: item.label,
       },
     ]);
-    this.treemap.setSelection([{ column: null, row: dataRows[0] }])
-    this.lastSelection = dataRows[0];
-
-    this.drawTable(item.name, null);
-    this.addColors();
-    var parent = this.findParent(item.label);
-
-  }
-
-  findParent(nodeCode) {
-    const filteredRows = this.data.getFilteredRows([{ column: 0, value: nodeCode }]);
-    if (filteredRows.length > 0) {
-      const rowIndex = filteredRows[0];
-      const parentCode = this.data.getValue(rowIndex, 2);
-      return parentCode;
-    } else {
-      console.warn("Parent bulunamadı.");
-      return null;
+    if (this.levelCalculatedData[item.name]) {
+      this.treemap.setSelection([{ column: null, row: dataRows[0] }])
+      this.lastSelection = dataRows[0];
+      this.drawTable(item.name, null);
+      this.addColors();
     }
   }
-
 
   handleSelection() {
     var selectedNode = this.treemap.getSelection()[0].row;
     this.drawTable(this.data.getValue(selectedNode, 7), null);
-    this.data.getValue(selectedNode, 0).includes("DIGER") ? this.treemap.setSelection([{ column: null, row: this.lastSelection }]) : this.lastSelection = selectedNode
-
+    this.levelCalculatedData[this.data.getValue(selectedNode, 7)] === undefined ? this.treemap.setSelection([{ column: null, row: this.lastSelection }]) : this.lastSelection = selectedNode
   }
 
   calculateLevelsData(levelJson, parentCode) {

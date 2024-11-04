@@ -288,3 +288,25 @@ table tr:hover td {
   text-align: left;
   justify-content: flex-start;
 }
+
+.back{
+  cursor: pointer;
+  width: fit-content;
+  padding: 5px 10px;
+  border: 1px solid black;
+}
+
+.toggle-chart{
+  cursor: pointer;
+}
+
+.heat-map-head{
+  margin: 10px 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#googleChart{
+  display: flex;
+  justify-content: center;
+}
