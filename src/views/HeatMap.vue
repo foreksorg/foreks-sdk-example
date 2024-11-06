@@ -302,9 +302,10 @@ export default class extends Vue {
       for (var i = 0; i < this.data.Wf.length; i++) {
         var parentX = textElement?.getAttribute("x");
         var isVertical = false;
+
         if (textElement?.textContent?.includes("…")) {
           isVertical = true;
-          textElement!.setAttribute("style", "writing-mode: tb;");
+          // textElement!.setAttribute("style", "writing-mode: tb;");
         }
         if (
           this.data.Wf[i].c[0].v.startsWith(
@@ -313,15 +314,21 @@ export default class extends Vue {
         ) {
           let roundedNum = this.data.Wf[i].c[5].v && typeof this.data.Wf[i].c[5].v === "number" ? Math.round(this.data.Wf[i].c[5].v * 1000) / 1000 : "0";
           if (textElement) {
-            textElement!.innerHTML = isVertical ? `<tspan x="${parentX}" dx="5">${this.data.Wf[i].c[0].v}</tspan>
-              <tspan x="${parentX}" y="${textElement?.getAttribute("y")}" dx="-5">% ${roundedNum}</tspan>` : `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
-              <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`;;
+            textElement!.innerHTML =  `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
+              <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`;
+            // textElement!.innerHTML = isVertical ? `<tspan x="${parentX}" dx="5">${this.data.Wf[i].c[0].v}</tspan>
+              // <tspan x="${parentX}" y="${textElement?.getAttribute("y")}" dx="-5">% ${roundedNum}</tspan>` : `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v}</tspan>
+              // <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`;
           }
           var textLength = textElement?.getBBox().width;
           var svgLength = textElement?.parentElement?.getBoundingClientRect().width;
           if (textLength && svgLength) {
             textLength >= svgLength &&
-              textElement!.setAttribute("font-size", "8");
+              // (textElement?.setAttribute("textLength",textLength+"px"),
+              (textElement!.innerHTML =  `<tspan x="${parentX}" dy="-5">${this.data.Wf[i].c[0].v.split(" ")[0]}</tspan>
+              <tspan x="${parentX}" dy="10">${this.data.Wf[i].c[0].v.split(" ")[1]}</tspan>
+              <tspan x="${parentX}" dy="10">% ${roundedNum}</tspan>`)
+              // textElement!.setAttribute("font-size", "8"))
           }
           break;
         }
