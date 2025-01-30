@@ -22,21 +22,26 @@
         </thead>
         <tbody>
           <template v-for="item in calendarData" :key="item.cid">
-            <tr>
-              <td>{{ item.country }}</td>
+            <tr class="economic-calender">
+              <td :rowspan="(item.subItems?.length || 0) + 1">
+                {{ item.country }}
+              </td>
               <td>{{ item.event }}</td>
               <td>{{ item.actual }}</td>
               <td>{{ item.forecast }}</td>
               <td>{{ item.previous }}</td>
               <td>{{ new Date(item.date) }}</td>
             </tr>
-            <tr v-if="item.subItems" class="sub-item">
-              <td>{{ item.country }}</td>
-              <td>{{ item.event }}</td>
-              <td>{{ item.actual }}</td>
-              <td>{{ item.forecast }}</td>
-              <td>{{ item.previous }}</td>
-              <td>{{ new Date(item.date) }}</td>
+            <tr
+              v-for="subItem in item.subItems || []"
+              :key="subItem.cid"
+              class="sub-item"
+            >
+              <td>{{ subItem.event }}</td>
+              <td>{{ subItem.actual }}</td>
+              <td>{{ subItem.forecast }}</td>
+              <td>{{ subItem.previous }}</td>
+              <td>{{ new Date(subItem.date) }}</td>
             </tr>
           </template>
         </tbody>
@@ -65,7 +70,6 @@ export default class extends Vue {
         "20250102020140",
         CalendarLangs.TR
       );
-    console.log(this.calendarData.length);
     this.ready = true;
   }
 }

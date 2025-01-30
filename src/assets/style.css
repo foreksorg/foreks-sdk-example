@@ -288,3 +288,17 @@ table tr:hover td {
   text-align: left;
   justify-content: flex-start;
 }
+
+.economic-calender td{
+  font-weight: bold;
+}
+
+.sub-item td{
+  padding: 5px;
+}
+
+.sub-item td:first-child {
+  text-align: center;
+  padding-left: 5px;
+  border-left: 1px solid #e0e0e0;
+}
