@@ -158,12 +158,10 @@ export default class extends Vue {
 
       function addColors() {
         const elements = Array.from(
-          document.getElementsByTagName(
-            "rect"
-          ) as unknown as HTMLCollectionOf<HTMLElement>
+          document.getElementsByTagName("rect") as any
         );
 
-        elements.forEach((element, index) => {
+        elements.forEach((element: any, index) => {
           var textElement = element?.parentNode?.querySelector("text");
           if (textElement?.textContent?.includes("…")) {
             for (var i = 0; i < data.Wf.length; i++) {

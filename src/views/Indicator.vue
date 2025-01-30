@@ -60,7 +60,7 @@ export default class extends Vue {
   categories = ["R3", "R2", "R1", "P.", "S1", "S2", "S3"];
   categoriesInData = ["r3", "r2", "r1", "pp", "s1", "s2", "s3"];
   ready = false;
-  indicatorData!: IndicatorResponse;
+  indicatorData!: IndicatorResponse[];
   async mounted() {
     await this.initialIndicator();
   }

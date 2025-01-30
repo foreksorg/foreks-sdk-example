@@ -21,14 +21,24 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in calendarData.splice(0, 10)" :key="item.id">
-            <td>{{ item.country }}</td>
-            <td>{{ item.event }}</td>
-            <td>{{ item.actual }}</td>
-            <td>{{ item.forecast }}</td>
-            <td>{{ item.previous }}</td>
-            <td>{{ new Date(item.date) }}</td>
-          </tr>
+          <template v-for="item in calendarData" :key="item.cid">
+            <tr>
+              <td>{{ item.country }}</td>
+              <td>{{ item.event }}</td>
+              <td>{{ item.actual }}</td>
+              <td>{{ item.forecast }}</td>
+              <td>{{ item.previous }}</td>
+              <td>{{ new Date(item.date) }}</td>
+            </tr>
+            <tr v-if="item.subItems" class="sub-item">
+              <td>{{ item.country }}</td>
+              <td>{{ item.event }}</td>
+              <td>{{ item.actual }}</td>
+              <td>{{ item.forecast }}</td>
+              <td>{{ item.previous }}</td>
+              <td>{{ new Date(item.date) }}</td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -50,11 +60,12 @@ export default class extends Vue {
 
   async initialCalendar() {
     this.calendarData =
-      await this.$foreksWebSDK.economicCalendar.getCalendarFromTo(
-        "20230101000000",
-        "20230201000000",
+      await this.$foreksWebSDK.economicCalendar.getCalendarFromToGrouped(
+        "20241227020104",
+        "20250102020140",
         CalendarLangs.TR
       );
+    console.log(this.calendarData.length);
     this.ready = true;
   }
 }
